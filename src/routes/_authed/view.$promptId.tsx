@@ -3,29 +3,12 @@ import { Button } from '@/components/selia/button'
 import { Heading } from '@/components/selia/heading'
 import { Separator } from '@/components/selia/separator'
 import { Text } from '@/components/selia/text'
-import { db } from '@/db'
-import { promptsTable } from '@/db/schema'
-import { useDeleteStore } from '@/stores/delete-stores'
+import { viewPropmts } from '@/lib/api/create-prompt'
+import { useDeleteStore } from '@/lib/utils/delete-stores'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
-import { eq } from 'drizzle-orm'
 import { ArrowLeftIcon, PencilIcon, TrashIcon } from 'lucide-react'
-import z from 'zod'
 
-const GetInputFromSchema = z.object({
-  promptId: z.uuid()
-})
-
-const viewPropmts = createServerFn({ method: 'GET' })
-  .inputValidator(GetInputFromSchema)
-  .handler(async ({ data }) => {
-    const viewPromptLoader = await db.query.promptsTable.findFirst({
-      where: eq(promptsTable.id, data.promptId)
-    });
-    return viewPromptLoader;
-  })
-
-export const Route = createFileRoute('/ui/view/$promptId')({
+export const Route = createFileRoute('/_authed/view/$promptId')({
   component: RouteComponent,
   loader: async ({ params }) => {
     const viewLoader = await viewPropmts({ data: { promptId: params.promptId } });
@@ -90,7 +73,7 @@ function RouteComponent() {
           block
           render={
             <Link
-              to='/ui/edit/$promptId'
+              to='/edit/$promptId'
               params={{
                 promptId: prompt.promptId,
               }}

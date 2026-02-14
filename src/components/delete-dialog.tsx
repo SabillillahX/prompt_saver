@@ -3,7 +3,7 @@ import { IconBox } from '@/components/selia/icon-box'
 import { Strong } from '@/components/selia/text'
 import { Trash2Icon } from 'lucide-react'
 import { Button } from './selia/button'
-import { useDeleteStore } from '@/stores/delete-stores'
+import { useDeleteStore } from '@/lib/utils/delete-stores'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
 import z from 'zod'
 import { useState } from 'react'
@@ -14,7 +14,7 @@ import { eq } from 'drizzle-orm'
 import { redirect, useRouter } from '@tanstack/react-router'
 
 const DeletePromptInputSchema = z.object({
-    promptId: z.uuid()
+    promptId: z.string().uuid()
 })
 
 export const deletePrompt = createServerFn({ method: 'POST' })

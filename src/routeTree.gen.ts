@@ -9,55 +9,45 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as UiCreateRouteImport } from './routes/ui/create'
+import { Route as GuessRouteRouteImport } from './routes/_guess/route'
+import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
+import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
-import { Route as AuthRegisterRouteImport } from './routes/auth/register'
-import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as UiViewPromptIdRouteImport } from './routes/ui/view.$promptId'
-import { Route as UiEditPromptIdRouteImport } from './routes/ui/edit.$promptId'
+import { Route as AuthedCreateRouteImport } from './routes/_authed/create'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as GuessAuthRegisterRouteImport } from './routes/_guess/auth/register'
+import { Route as GuessAuthLoginRouteImport } from './routes/_guess/auth/login'
+import { Route as AuthedViewPromptIdRouteImport } from './routes/_authed/view.$promptId'
+import { Route as AuthedEditPromptIdRouteImport } from './routes/_authed/edit.$promptId'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const GuessRouteRoute = GuessRouteRouteImport.update({
+  id: '/_guess',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UiCreateRoute = UiCreateRouteImport.update({
-  id: '/ui/create',
-  path: '/ui/create',
+const AuthedRouteRoute = AuthedRouteRouteImport.update({
+  id: '/_authed',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedIndexRoute = AuthedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedRouteRoute,
 } as any)
 const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
   id: '/demo/drizzle',
   path: '/demo/drizzle',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/auth/register',
-  path: '/auth/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UiViewPromptIdRoute = UiViewPromptIdRouteImport.update({
-  id: '/ui/view/$promptId',
-  path: '/ui/view/$promptId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UiEditPromptIdRoute = UiEditPromptIdRouteImport.update({
-  id: '/ui/edit/$promptId',
-  path: '/ui/edit/$promptId',
-  getParentRoute: () => rootRouteImport,
+const AuthedCreateRoute = AuthedCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedRouteRoute,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
@@ -73,6 +63,26 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   id: '/demo/api/names',
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
+} as any)
+const GuessAuthRegisterRoute = GuessAuthRegisterRouteImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
+  getParentRoute: () => GuessRouteRoute,
+} as any)
+const GuessAuthLoginRoute = GuessAuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => GuessRouteRoute,
+} as any)
+const AuthedViewPromptIdRoute = AuthedViewPromptIdRouteImport.update({
+  id: '/view/$promptId',
+  path: '/view/$promptId',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedEditPromptIdRoute = AuthedEditPromptIdRouteImport.update({
+  id: '/edit/$promptId',
+  path: '/edit/$promptId',
+  getParentRoute: () => AuthedRouteRoute,
 } as any)
 const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
   id: '/demo/start/ssr/',
@@ -96,32 +106,32 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/': typeof AuthedIndexRoute
+  '/create': typeof AuthedCreateRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
-  '/ui/create': typeof UiCreateRoute
+  '/edit/$promptId': typeof AuthedEditPromptIdRoute
+  '/view/$promptId': typeof AuthedViewPromptIdRoute
+  '/auth/login': typeof GuessAuthLoginRoute
+  '/auth/register': typeof GuessAuthRegisterRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/ui/edit/$promptId': typeof UiEditPromptIdRoute
-  '/ui/view/$promptId': typeof UiViewPromptIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/': typeof AuthedIndexRoute
+  '/create': typeof AuthedCreateRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
-  '/ui/create': typeof UiCreateRoute
+  '/edit/$promptId': typeof AuthedEditPromptIdRoute
+  '/view/$promptId': typeof AuthedViewPromptIdRoute
+  '/auth/login': typeof GuessAuthLoginRoute
+  '/auth/register': typeof GuessAuthRegisterRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/ui/edit/$promptId': typeof UiEditPromptIdRoute
-  '/ui/view/$promptId': typeof UiViewPromptIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -129,16 +139,18 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/_authed': typeof AuthedRouteRouteWithChildren
+  '/_guess': typeof GuessRouteRouteWithChildren
+  '/_authed/create': typeof AuthedCreateRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
-  '/ui/create': typeof UiCreateRoute
+  '/_authed/': typeof AuthedIndexRoute
+  '/_authed/edit/$promptId': typeof AuthedEditPromptIdRoute
+  '/_authed/view/$promptId': typeof AuthedViewPromptIdRoute
+  '/_guess/auth/login': typeof GuessAuthLoginRoute
+  '/_guess/auth/register': typeof GuessAuthRegisterRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/ui/edit/$promptId': typeof UiEditPromptIdRoute
-  '/ui/view/$promptId': typeof UiViewPromptIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -148,15 +160,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/create'
+    | '/demo/drizzle'
+    | '/edit/$promptId'
+    | '/view/$promptId'
     | '/auth/login'
     | '/auth/register'
-    | '/demo/drizzle'
-    | '/ui/create'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
-    | '/ui/edit/$promptId'
-    | '/ui/view/$promptId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -164,31 +176,33 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/create'
+    | '/demo/drizzle'
+    | '/edit/$promptId'
+    | '/view/$promptId'
     | '/auth/login'
     | '/auth/register'
-    | '/demo/drizzle'
-    | '/ui/create'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
-    | '/ui/edit/$promptId'
-    | '/ui/view/$promptId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
     | '/demo/start/ssr'
   id:
     | '__root__'
-    | '/'
-    | '/auth/login'
-    | '/auth/register'
+    | '/_authed'
+    | '/_guess'
+    | '/_authed/create'
     | '/demo/drizzle'
-    | '/ui/create'
+    | '/_authed/'
+    | '/_authed/edit/$promptId'
+    | '/_authed/view/$promptId'
+    | '/_guess/auth/login'
+    | '/_guess/auth/register'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
-    | '/ui/edit/$promptId'
-    | '/ui/view/$promptId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -196,16 +210,12 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthedRouteRoute: typeof AuthedRouteRouteWithChildren
+  GuessRouteRoute: typeof GuessRouteRouteWithChildren
   DemoDrizzleRoute: typeof DemoDrizzleRoute
-  UiCreateRoute: typeof UiCreateRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
-  UiEditPromptIdRoute: typeof UiEditPromptIdRoute
-  UiViewPromptIdRoute: typeof UiViewPromptIdRoute
   DemoStartSsrDataOnlyRoute: typeof DemoStartSsrDataOnlyRoute
   DemoStartSsrFullSsrRoute: typeof DemoStartSsrFullSsrRoute
   DemoStartSsrSpaModeRoute: typeof DemoStartSsrSpaModeRoute
@@ -214,19 +224,26 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_guess': {
+      id: '/_guess'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof GuessRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ui/create': {
-      id: '/ui/create'
-      path: '/ui/create'
-      fullPath: '/ui/create'
-      preLoaderRoute: typeof UiCreateRouteImport
+    '/_authed': {
+      id: '/_authed'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthedRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/': {
+      id: '/_authed/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthedIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
     }
     '/demo/drizzle': {
       id: '/demo/drizzle'
@@ -235,33 +252,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoDrizzleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ui/view/$promptId': {
-      id: '/ui/view/$promptId'
-      path: '/ui/view/$promptId'
-      fullPath: '/ui/view/$promptId'
-      preLoaderRoute: typeof UiViewPromptIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ui/edit/$promptId': {
-      id: '/ui/edit/$promptId'
-      path: '/ui/edit/$promptId'
-      fullPath: '/ui/edit/$promptId'
-      preLoaderRoute: typeof UiEditPromptIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authed/create': {
+      id: '/_authed/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof AuthedCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
     }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
@@ -283,6 +279,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/api/names'
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_guess/auth/register': {
+      id: '/_guess/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof GuessAuthRegisterRouteImport
+      parentRoute: typeof GuessRouteRoute
+    }
+    '/_guess/auth/login': {
+      id: '/_guess/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof GuessAuthLoginRouteImport
+      parentRoute: typeof GuessRouteRoute
+    }
+    '/_authed/view/$promptId': {
+      id: '/_authed/view/$promptId'
+      path: '/view/$promptId'
+      fullPath: '/view/$promptId'
+      preLoaderRoute: typeof AuthedViewPromptIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/edit/$promptId': {
+      id: '/_authed/edit/$promptId'
+      path: '/edit/$promptId'
+      fullPath: '/edit/$promptId'
+      preLoaderRoute: typeof AuthedEditPromptIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
     }
     '/demo/start/ssr/': {
       id: '/demo/start/ssr/'
@@ -315,17 +339,45 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthedRouteRouteChildren {
+  AuthedCreateRoute: typeof AuthedCreateRoute
+  AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedEditPromptIdRoute: typeof AuthedEditPromptIdRoute
+  AuthedViewPromptIdRoute: typeof AuthedViewPromptIdRoute
+}
+
+const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
+  AuthedCreateRoute: AuthedCreateRoute,
+  AuthedIndexRoute: AuthedIndexRoute,
+  AuthedEditPromptIdRoute: AuthedEditPromptIdRoute,
+  AuthedViewPromptIdRoute: AuthedViewPromptIdRoute,
+}
+
+const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
+  AuthedRouteRouteChildren,
+)
+
+interface GuessRouteRouteChildren {
+  GuessAuthLoginRoute: typeof GuessAuthLoginRoute
+  GuessAuthRegisterRoute: typeof GuessAuthRegisterRoute
+}
+
+const GuessRouteRouteChildren: GuessRouteRouteChildren = {
+  GuessAuthLoginRoute: GuessAuthLoginRoute,
+  GuessAuthRegisterRoute: GuessAuthRegisterRoute,
+}
+
+const GuessRouteRouteWithChildren = GuessRouteRoute._addFileChildren(
+  GuessRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
+  AuthedRouteRoute: AuthedRouteRouteWithChildren,
+  GuessRouteRoute: GuessRouteRouteWithChildren,
   DemoDrizzleRoute: DemoDrizzleRoute,
-  UiCreateRoute: UiCreateRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
-  UiEditPromptIdRoute: UiEditPromptIdRoute,
-  UiViewPromptIdRoute: UiViewPromptIdRoute,
   DemoStartSsrDataOnlyRoute: DemoStartSsrDataOnlyRoute,
   DemoStartSsrFullSsrRoute: DemoStartSsrFullSsrRoute,
   DemoStartSsrSpaModeRoute: DemoStartSsrSpaModeRoute,

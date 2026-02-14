@@ -4,44 +4,15 @@ import { Item, ItemAction, ItemContent, ItemDescription, ItemTitle } from '@/com
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from '@/components/selia/menu'
 import { Separator } from '@/components/selia/separator'
 import { Stack } from '@/components/selia/stack'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { EllipsisVerticalIcon, PencilIcon, PlusIcon, SearchIcon, Trash2Icon } from 'lucide-react'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { EllipsisVerticalIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { Header } from '@/components/header'
-import { useDeleteStore } from '@/stores/delete-stores'
-import { db } from '@/db'
-import { createServerFn } from '@tanstack/react-start'
-import { desc, ilike, or } from 'drizzle-orm'
-import { promptsTable } from '@/db/schema'
-import { InputGroup, InputGroupAddon } from '@/components/selia/input-group'
-import { Input } from '@/components/selia/input'
-import z from 'zod'
-import { Text } from '@/components/selia/text'
-import {zodValidator} from '@tanstack/zod-adapter'
+import { useDeleteStore } from '@/lib/utils/delete-stores'
+import { zodValidator } from '@tanstack/zod-adapter'
+import { PromptSearch } from '@/components/prompt-search'
+import { getPrompts, PromptsSearchSchema } from '@/lib/api/list-prompt'
 
-const GetPromptsInputSchema = z.object({
-  query: z.string().optional()
-})
-
-const PromptsSearchSchema = z.object({
-  query: z.string().optional()
-})
-
-const getPrompts = createServerFn({ method: 'GET' })
-  .inputValidator(GetPromptsInputSchema)
-  .handler(async ({ data }) => {
-    const promptLoader = await db.query.promptsTable.findMany({
-      where: data.query
-        ? or(
-          ilike(promptsTable.title, `%${data.query}%`),
-          ilike(promptsTable.content, `%${data.query}%`)
-        )
-        : undefined,
-      orderBy: [desc(promptsTable.createdAt)]
-    });
-    return promptLoader
-  });
-
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_authed/')({
   component: App,
   validateSearch: zodValidator(PromptsSearchSchema),
   loaderDeps: ({ search }) => ({ query: search.query }),
@@ -57,63 +28,30 @@ export const Route = createFileRoute('/')({
 });
 
 function App() {
+  const user = Route.useRouteContext();
+  console.log(user)
   const setBeingDeleted = useDeleteStore(state => state.setBeingDeleted);
   const { prompts } = Route.useLoaderData();
-  const search = Route.useSearch();
-  const navigate = useNavigate();
-
-  function handleSearch(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const query = event.currentTarget.query.value;
-    navigate({
-      to: '/',
-      search: {
-        query
-      }
-    });
-  }
 
   return (
     <>
       <Header>
         <Heading>
-          The Joker
+          Prompt Saver
         </Heading>
         <Button
           nativeButton={false}
           variant={'outline'}
           render={
-            <Link to="/ui/create" >
+            <Link to="/create" >
               <PlusIcon /> Create Prompt
             </Link>
           } />
       </Header>
       <Separator className="my-6" />
 
-      {/* Search Bar */}
-      <form className='mb-6' onSubmit={handleSearch}>
-        <InputGroup>
-          <Input placeholder='Search prompt...' name='query' />
-          <InputGroupAddon align='end'>
-            <SearchIcon />
-          </InputGroupAddon>
-        </InputGroup>
-        {search.query && (
-          <Text className='text-muted-foreground mt-2'>
-            Result for '{search.query}'. 
-            <Link 
-              to='/'
-              search={{
-                query: undefined
-              }}
-              className='underline'
-            >
-              Clear search
-            </Link>
-          </Text>
-        )}
-      </form>
+      {/* Search bar */}
+      <PromptSearch />
 
       {/* Main list */}
       <Stack>
@@ -135,7 +73,7 @@ function App() {
                 size={'sm'}
                 render={
                   <Link
-                    to='/ui/view/$promptId'
+                    to='/view/$promptId'
                     params={{
                       promptId: String(prompts.id),
                     }}>
@@ -156,7 +94,7 @@ function App() {
                     nativeButton={false}
                     render={
                       <Link
-                        to='/ui/edit/$promptId'
+                        to='/edit/$promptId'
                         params={{
                           promptId: String(prompts.id)
                         }}

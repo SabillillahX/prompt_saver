@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1770103467187,
-      "tag": "0000_premium_swordsman",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1770299859307,
-      "tag": "0001_confused_omega_flight",
+      "when": 1771044720803,
+      "tag": "0000_square_firebird",
       "breakpoints": true
     }
   ]

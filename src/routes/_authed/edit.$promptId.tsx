@@ -1,41 +1,38 @@
 import { Header } from '@/components/header'
 import { PromptForm } from '@/components/prompt-form'
+import { Alert, AlertDescription, AlertTitle } from '@/components/selia/alert'
 import { Button } from '@/components/selia/button'
 import { Heading } from '@/components/selia/heading'
 import { Separator } from '@/components/selia/separator'
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
-import { createServerFn, useServerFn } from '@tanstack/react-start'
+import { editPrompts, updatePromptFromServerFn } from '@/lib/api/create-prompt'
+import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { useServerFn } from '@tanstack/react-start'
 import { ArrowLeftIcon, XCircleIcon } from 'lucide-react'
-import { z } from 'zod'
-import { db } from '@/db'
-import { promptsTable } from '@/db/schema'
 import { useState } from 'react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/selia/alert'
 
-const PromptInputSchema = z.object({
-  title: z.string().min(1).max(50),
-  content: z.string().min(1)
-})
-
-const createPrompt = createServerFn({ method: 'POST' })
-  .inputValidator(PromptInputSchema)
-  .handler(async ({ data }) => {
-    await db.insert(promptsTable).values({
-      title: data.title,
-      content: data.content
-    });
-
-    throw redirect({
-      to: '/'
-    });
-  })
-
-export const Route = createFileRoute('/ui/create')({
+export const Route = createFileRoute('/_authed/edit/$promptId')({
   component: RouteComponent,
+  loader: async ({ params }) => {
+    const editLoader = await editPrompts({ data: { promptId: params.promptId } })
+
+    if (!editLoader) {
+      throw notFound();
+    }
+
+    return { editLoader };
+  },
+  notFoundComponent: () => {
+    <div>
+      Not Found Error. <Link to='/'>Back To Home</Link>
+    </div>
+  },
+  errorComponent: () => <div>Error </div>
 })
 
 function RouteComponent() {
-  const createPromptFn = useServerFn(createPrompt);
+  const { editLoader } = Route.useLoaderData();
+  const params = Route.useParams();
+  const updateServerFn = useServerFn(updatePromptFromServerFn)
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -46,17 +43,18 @@ function RouteComponent() {
     const formData = new FormData(form);
 
     setError(null);
-    
+
     try {
       setLoading(true);
-      await createPromptFn({
+      await updateServerFn({
         data: {
           title: formData.get('title') as string,
-          content: formData.get('content') as string
+          content: formData.get('content') as string,
+          promptId: params.promptId,
         }
-      });
+      })
     } catch (error) {
-      setError("Failed to create prompt. Please try again.");
+      setError("Failed to update prompt. Please try again later");
     } finally {
       setLoading(false);
     }
@@ -65,7 +63,7 @@ function RouteComponent() {
   return (
     <>
       <Header>
-        <Heading>Create Propmt</Heading>
+        <Heading>Edit Propmt {editLoader?.title}</Heading>
         <Button
           nativeButton={false}
           variant='outline'
@@ -84,7 +82,14 @@ function RouteComponent() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <PromptForm onSubmit={handleSubmit} Loading={loading} />
+      <PromptForm
+        onSubmit={handleSubmit}
+        Loading={loading}
+        data={{
+          title: editLoader?.title,
+          content: editLoader?.content
+        }}
+      />
     </>
   )
 }
